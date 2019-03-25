@@ -1,0 +1,46 @@
+{
+  "name": "svaha",
+  "description": "code generator ",
+  "version": "0.0.0",
+  "author": "stalex",
+  "bin": {
+    "svaha": "./bin/run"
+  },
+  "bugs": "https://github.com/stalex/svaha/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.11",
+    "@oclif/config": "^1.12.8",
+    "@oclif/plugin-help": "^2.1.6",
+    "fs-extra": "^7.0.1",
+    "ramda": "^0.26.1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1.2.4",
+    "chai": "^4.2.0",
+    "eslint": "^5.14.1",
+    "eslint-config-oclif": "^3.1.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/stalex/svaha",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "svaha"
+  },
+  "repository": "stalex/svaha",
+  "scripts": {
+    "posttest": "eslint .",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
+  }
+}
