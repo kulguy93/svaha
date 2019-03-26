@@ -1,13 +1,21 @@
-const operationTemplate = ({operationId, method, path}) => `
+const R = require('ramda')
+
+const definitionTemplate = ({key, props}) => `
+const ${key} = ${JSON.stringify(props)}
+`
+
+const  parametrsTemplate = R.compose(
+  R.join(',\n'),
+  R.map(([key, value]) => `${key}: ${R.is(String, value) ? value : JSON.stringify(value)}`),
+  R.toPairs,
+)
+
+const operationTemplate = ({operationId, method, path, parameters}) => `
 ${operationId}({ request, domain }, parameters = {}) {
     const pickParams = R.pick(R.__, parameters)
     const paramsIn = {
-      path: ['id'],
-      query: [],
-      headers: [],
-      body: []
+      ${parametrsTemplate(parameters)}
     }
-
     const params = R.map(pickParams, paramsIn)
 
     const requestParams = {
@@ -17,8 +25,7 @@ ${operationId}({ request, domain }, parameters = {}) {
         params,
       }),
       method: '${method}',
-      headers: withDefaultHeaders(params.headers),
-      body: params.body
+      headers: withDefaultHeaders(params.headers), ${R.prop('body', parameters) ? '\nbody: params.body' : ''}
     }
 
     return request(requestParams)
@@ -48,6 +55,7 @@ const withDefaultHeaders = R.mergeRight(defaultHeaders)
 `
 
 module.exports = {
+  definitionTemplate,
   defaultHeadersTemplate,
   baseTemplate,
   operationsTemplate,
