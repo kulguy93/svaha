@@ -3,8 +3,8 @@ class SwaggerExtractor {
     return ['SwaggerTransformer']
   }
 
-  static async extract() {
-    return require('../input/mi-core')
+  static async extract(cliParams) {
+    return require(cliParams.input)
   }
 }
 

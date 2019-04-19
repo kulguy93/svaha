@@ -1,13 +1,17 @@
-const extractors = require('./extractors')
-const transformers = require('./transformers')
-const loaders = require('./loaders')
-const extractedData = {}
+const extractors = require('./extractors');
+const transformers = require('./transformers');
+const loaders = require('./loaders');
+const extractedData = {};
 const transformedData = {};
+const path = require('path');
 
-(async () => {
+module.exports = async (cliParams) => {
+  console.log(cliParams);
   try {
+    cliParams.input = path.resolve(__dirname, cliParams.flags.input)
+    cliParams.output = path.resolve(__dirname, cliParams.flags.output)
     for (const eachExtractor of extractors) {
-      const data = await eachExtractor.extract()
+      const data = await eachExtractor.extract(cliParams);
       eachExtractor.targetTransformers.forEach(eachTargetName => extractedData[eachTargetName] = data)
     }
 
@@ -17,12 +21,12 @@ const transformedData = {};
     }
 
     for (const eachLoader of loaders) {
-      await eachLoader.load(transformedData[eachLoader.name])
+      await eachLoader.load(transformedData[eachLoader.name], cliParams)
     }
   } catch (err) {
-    console.error(err)
+    console.error(err);
     process.exit(1)
   } finally {
     process.exit(0)
   }
-})()
+};

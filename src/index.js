@@ -1,21 +1,16 @@
-const processSpec = require('./svaha').processSpec
-const {Command, flags} = require('@oclif/command')
+const processSpec = require('../etl');
+const {Command, flags} = require('@oclif/command');
 
 class SvahaCommand extends Command {
   async run() {
-    const {flags, args} = this.parse(SvahaCommand)
-    processSpec(args.spec, flags.output)
+    await processSpec(this.parse(SvahaCommand))
   }
 }
-
-SvahaCommand.args = [
-  {name: 'spec'},
-]
 
 SvahaCommand.description = `Describe the command here
 ...
 Extra documentation goes here
-`
+`;
 
 SvahaCommand.flags = {
   // add --version flag to show CLI version
@@ -23,6 +18,7 @@ SvahaCommand.flags = {
   // add --help flag to show CLI version
   help: flags.help({char: 'h'}),
   output: flags.string({char: 'o', description: 'output dir'}),
-}
+  input: flags.string({char: 'i', description: 'input dir'})
+};
 
-module.exports = SvahaCommand
+module.exports = SvahaCommand;
