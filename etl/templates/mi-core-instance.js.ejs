@@ -1,0 +1,48 @@
+import getEnv from 'utils/getEnv';
+import { createApiInstance, createUrl } from 'data-provider';
+import * as R from 'ramda';
+
+const defaultHeaders =  {
+'Accept'      : `<%= consumes[0] %>`,
+'Content-Type': `<%= produces[0] %>`,
+};
+
+const withDefaultHeaders = R.mergeRight(defaultHeaders);
+
+
+<% for (const each of Object.keys(definitions)) { %>
+  const <%= each %> = <%- JSON.stringify(definitions[each]) %>;
+<% } %>
+
+const MI = {
+<% if (operations[0]){ %>
+  <% for (const eachPath of operations) { %>
+    <%= eachPath.operationId %>({ request, domain }, parameters = {}) {
+    const pickParams = R.pick(R.__, parameters);
+    const paramsIn = {
+    <% for (const eachParamsIn of Object.keys(eachPath.parameters || {})) {
+    if (eachPath.parameters[eachParamsIn][0]){ %>
+      <%= eachParamsIn %>: <%- eachPath.parameters[eachParamsIn][0].definition ? eachPath.parameters[eachParamsIn][0].definition : '[\'' + eachPath.parameters[eachParamsIn].join('\',\'') + '\']' %>,
+    <% }
+    } %>
+    };
+    const params = R.map(pickParams, paramsIn);
+
+    const requestParams = {
+    url: createUrl({
+    path: `<%= eachPath.path %>`,
+    domain,
+    params,
+    }),
+    method : `<%= eachPath.method %>`,
+    headers: withDefaultHeaders(params.headers),
+    };
+
+    return request(requestParams);
+    },
+  <% } %>
+<% } %>
+};
+
+
+export default MI;

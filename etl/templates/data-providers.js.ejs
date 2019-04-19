@@ -1,0 +1,16 @@
+import { compose, defaultProps } from 'recompose'
+import { MiRequests } from './mi-core-instance'
+import DataProvider, { isExpire } from '../data-provider'
+
+
+<% if (operations[0]){ %>
+  <% for (const eachPath of operations) { %>
+    export const <%= eachPath.operationId %>DataProvider = compose(
+    defaultProps({
+    requestAction: MiRequests.<%= eachPath.operationId %>,
+    isExpire: isExpire(10)
+    }),
+    DataProvider
+    )
+  <% } %>
+<% } %>
